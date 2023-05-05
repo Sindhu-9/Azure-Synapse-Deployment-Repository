@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "USE serverlessdatabase;\nGo\n---ENCRYPT YOU DATABASE-----\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'P@ssw0rd1234'\n\n-------------------------------------\nDROP DATABASE  SCOPED CREDENTIAL ADLSGen2_Connection\n-----Connecting to the ADLSGen2 Connection-------\n\n\nCREATE DATABASE SCOPED CREDENTIAL ADLSGen2_Connection\nWITH IDENTITY = 'SHARED ACCESS SIGNATURE',\nSECRET = 'sv=2021-12-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2023-05-02T14:29:54Z&st=2023-05-02T06:29:54Z&spr=https&sig=9jHalBVcLpsyizW1Moov2lLJdY7zAIMbM5f2efKtjkU%3D' \n\n\n-----\n\ndrop EXTERNAL DATA SOURCE Azuredatalakestoragegen2;\n-- 6  \nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'Azuredatalakestoragegen2')   \n    CREATE EXTERNAL DATA SOURCE Azuredatalakestoragegen2\nWITH\n(   LOCATION = 'abfss://raw@cicdgen2.dfs.core.windows.net'\n)\nGO  \n\n -- 7   \nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseCsvFormat')   \n\tCREATE EXTERNAL FILE FORMAT [SynapseCsvFormat]   \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT)  \nGO  \n\n-- 8  \nCREATE EXTERNAL TABLE Employee ( \n     employee_id INT,\n     employee_name varchar(50),\n     department_id varchar(3),\n     salary INT,\n     highest_qualification varchar(50)\n\n\t)  \n\tWITH (  \n\tLOCATION = 'employee1.csv',  \n\tDATA_SOURCE = [Azuredatalakestoragegen2],  \n\tFILE_FORMAT = [SynapseCsvFormat]  \n\t)  \nGO  \n\n-- 9  \n ",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "serverlessdatabase",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
